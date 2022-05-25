@@ -1,5 +1,8 @@
 # вариант 17
-
+# Приложение БЮРО ПО ТРУДОУСТРОЙСТВУ для некоторой организации.
+# БД должна содержать таблицу Работник со следующей структурой записи:
+# фамилия, имя, отчество, возраст, пол, профессия, стаж работы.
+# БД должна обеспечивать получение информации о работнике по стажу работы.
 
 # Для генерирования 100 рандомных работников запустите generator.py
 # Для редактирования данных необходимо выбрать нужную строчку, а после этого выбрать "Редактировать"
@@ -104,11 +107,8 @@ class Main(tk.Frame):
 
     def delete_records(self):
         for selection_item in self.tree.selection():
-                self.db.cur.execute("""DELETE FROM Rabotnik WHERE user_id=?""", (self.tree.set(selection_item, '#1'),))
+            self.db.cur.execute("""DELETE FROM Rabotnik WHERE user_id=?""", (self.tree.set(selection_item, '#1'),))
         self.db.con.commit()
-        self.view_records()
-
-    def none(self):
         self.view_records()
 
     def search_records(self, experience):
@@ -116,7 +116,6 @@ class Main(tk.Frame):
         self.db.cur.execute("""SELECT * FROM Rabotnik WHERE experience>=?""", experience)
         [self.tree.delete(i) for i in self.tree.get_children()]
         [self.tree.insert('', 'end', values=row) for row in self.db.cur.fetchall()]
-
 
     def clean_data(self, surname, name, patronymic, old, profession, experience):
         if re.findall(r'[^a-zA-ZА-ЯёЁа-я]', surname):
@@ -256,6 +255,7 @@ class Update(Child):
 
         self.combobox = ttk.Combobox(self, values=[u'Мужчина', u'Женщина'], state="readonly")
         self.combobox.place(x=145, y=125)
+
 
 class Search(tk.Toplevel):
     """Класс окна поиска работников по стажу работы"""
