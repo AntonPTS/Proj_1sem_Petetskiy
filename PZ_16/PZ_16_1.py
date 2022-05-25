@@ -85,12 +85,15 @@ class Main(tk.Frame):
     def update_record(self, surname, name, patronymic, old, sex, profession, experience):
         is_valid, msg = self.clean_data(surname, name, patronymic, old, profession, experience)
         if is_valid:
-            self.db.cur.execute(
-                """UPDATE Rabotnik SET surname=?, name=?, patronymic=?, old=?, sex=?, profession=?, experience=? WHERE user_id=?""",
-                (surname, name, patronymic, old, sex, profession, experience,
-                 self.tree.set(self.tree.selection()[0], '#1')))
-            self.db.con.commit()
-            self.view_records()
+            try:
+                self.db.cur.execute(
+                    """UPDATE Rabotnik SET surname=?, name=?, patronymic=?, old=?, sex=?, profession=?, experience=? WHERE user_id=?""",
+                    (surname, name, patronymic, old, sex, profession, experience,
+                     self.tree.set(self.tree.selection()[0], '#1')))
+                self.db.con.commit()
+                self.view_records()
+            except IndexError:
+                self.open_error('Вы не выбрали запись')
         else:
             self.open_error(msg)
 
